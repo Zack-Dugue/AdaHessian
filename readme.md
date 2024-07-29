@@ -7,14 +7,15 @@ There are 2  significant improvements from Base Ada Hessian in this repo.
 
 ### We perform momentum over the Hessian, rather than the squared Hessian.
 In the original Ada Hessian Paper the paper writers chose to have the Ada Hessian Algorithm track the exponential moving average of the *square* of the Hessian. That value is then plugged in to replace what is generally the second moment in the Adam Optimizer. In this repo, I track the Hessian Directly. <br/>
-Original Paper Formula:
-$$v_{t+1} = v_t \cdot (1 - \beta_1 ) + \mathbb_{H_{\text{diag}} **2 \cdot \beta_1$$
-Our formula:
-$$v_{t+1} = v_{t+1} \cdot (1 - \beta_1 ) + \mathbb_{H_{\text{diag}} \cdot \beta_1$$
+Original Paper Formula:<br/>
+
+$$v_{t+1} = v_t \cdot (1 - \beta_1 ) + H_{diag}^2 \cdot \beta_1$$ <br/>
+Our formula:<br/>
+$$v_{t+1} = v_{t+1} \cdot (1 - \beta_1 ) +  H_{diag}^2 \cdot  \beta_1$$ <br/>
 
 Obviously this $v_t$ now can potentially contain negative values, and thus we take the absolute value before plugging it into the Adam formula. I found that accumulating the Hessian directly had better results than the squared method from the paper. I believe this is because this $v_t$ is closer to the true hessian and is also larger than the value tracked in the paper. 
 
 ### We use a Control Variate Method for the Hutchinson Estimator:
 
-Control Variate Methods are a way of reducing the variance of a monte carlo estimate. They are computed by designating a "control variate" random variable whose mean is known and that is correlated with the random variable whose expectation we're trying to evaluate. They're often used in the trace estimation component of Hutchinson's Algorithm, a good resource explaining this can be found [here](https://www.nowozin.net/sebastian/blog/thoughts-on-trace-estimation-in-deep-learning.html) . For trace estimation algorithms, they estimate the diagonal of the hessian using the prior monte carlo samples, and use that as the control variate. In this implementation, we have the control variate be our momentum estimate of the Hessian itself. In theory, this shouldn't work, since that variable isn't actually random, it's a known value. In practice though, doing this actually yields superior generalization results. <\br>
+Control Variate Methods are a way of reducing the variance of a monte carlo estimate. They are computed by designating a "control variate" random variable whose mean is known and that is correlated with the random variable whose expectation we're trying to evaluate. They're often used in the trace estimation component of Hutchinson's Algorithm, a good resource explaining this can be found [here](https://www.nowozin.net/sebastian/blog/thoughts-on-trace-estimation-in-deep-learning.html) . For trace estimation algorithms, they estimate the diagonal of the hessian using the prior monte carlo samples, and use that as the control variate. In this implementation, we have the control variate be our momentum estimate of the Hessian itself. In theory, this shouldn't work, since that variable isn't actually random, it's a known value. In practice though, doing this actually yields superior generalization results. <br/>
 To compute this, instead of making our output values in the autograd.grad computation the gradients, we make the output values the gradients minus the control variate times the weights. At some point I might refine this readme further to show these derivation, but the final result there is something matching the Contorl Variate formulation for the Hutchinsons Estimator.
