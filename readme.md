@@ -7,12 +7,11 @@ There are 2  significant improvements from Base Ada Hessian in this repo.
 
 ### We perform momentum over the Hessian, rather than the squared Hessian.
 In the original Ada Hessian Paper the paper writers chose to have the Ada Hessian Algorithm track the exponential moving average of the *square* of the Hessian. That value is then plugged in to replace what is generally the second moment in the Adam Optimizer. In this repo, I track the Hessian Directly. <br/>
-Original Paper Formula:<br/>
 
+_Original Paper Formula_:<br/>
 $$v_{t+1} = v_t \cdot (1 - \beta_1 ) + H_{diag}^2 \cdot \beta_1$$ <br/>
-Our formula:<br/>
+_Our formula_:<br/>
 $$v_{t+1} = v_{t+1} \cdot (1 - \beta_1 ) +  H_{diag}^2 \cdot  \beta_1$$ <br/>
-
 Obviously this $v_t$ now can potentially contain negative values, and thus we take the absolute value before plugging it into the Adam formula. I found that accumulating the Hessian directly had better results than the squared method from the paper. I believe this is because this $v_t$ is closer to the true hessian and is also larger than the value tracked in the paper. 
 
 ### We use a Control Variate Method for the Hutchinson Estimator:
