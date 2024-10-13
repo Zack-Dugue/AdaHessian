@@ -11,7 +11,7 @@ In the original Ada Hessian Paper the paper writers chose to have the Ada Hessia
 _Original Paper Formula_:<br/>
 $$v_{t+1} = v_t \cdot (1 - \beta_1 ) + H_{diag}^2 \cdot \beta_1$$ <br/>
 _Our formula_:<br/>
-$$v_{t+1} = v_{t} \cdot (1 - \beta_1 ) +  H_{diag}^2 \cdot  \beta_1$$ <br/>
+$$v_{t+1} = v_{t} \cdot (1 - \beta_1 ) +  H_{diag} \cdot  \beta_1$$ <br/>
 Obviously this $v_t$ now can potentially contain negative values, and thus we take the absolute value before plugging it into the Adam formula. I found that accumulating the Hessian directly had better results than the squared method from the paper. I believe this is because this $v_t$ is closer to the true hessian and is also larger than the value tracked in the paper. 
 
 ### We use a Control Variate Method for the Hutchinson Estimator:
