@@ -3,7 +3,7 @@
 This is an unofficial pytorch implementation of the [AdaHessian Optimizer](https://arxiv.org/abs/2006.00719). It is largely based on @davada54's [implementation](https://github.com/davda54/ada-hessian/tree/master). With a few interesting changes with motivated the creation of this repo. 
 
 ## Improvements from Base AdaHessian
-There are 2  significant improvements from Base Ada Hessian in this repo. 
+There are 2 improvements from Base Ada Hessian in this repo. 
 
 ### We compute the (momentum) EMA over the Hessian, rather than the squared Hessian.
 AdaHessian can be thought of as Adam, but it replaces the squared gradient in the denominator, with a term computed from the Hessian. In the original Ada Hessian Paper the paper writers chose to have the Ada Hessian Algorithm track the exponential moving average of the *square* of the Hessian. That value is then plugged in to replace what is generally the second moment in the Adam Optimizer. In this repo, I track the EMA of the Hessian directly. <br/>
