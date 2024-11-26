@@ -43,3 +43,6 @@ $$ (H-v_t \beta_1) z + 0 $$
 Then averaged over monte carlo samples of $z$ we get:
 $$H_{diag} = \mathbb{E}[z \odot  (H - v_t \beta_1)z] $$
 Where $z$ is sampled according to a radermacher distribution. The above is the equation for our a control variate estimate of the hessian diagonal, where $v_t \beta_1$ is our estimate for the value hessian diagonal. 
+
+## What this repo contains:
+The AdaHessian.py file contains the actual optimizer. The example.ipynb is a google collab notebook that allows you to evaluate the optimizer on a vision (cifar10 - resnet 50) and nlp ( wikitext2 - default pytorch transformer). One thing worth noting is that the increased accuracy of the Hessian estimate is only really useful if you reduce the momentum for the hessian diagonal. The default is still .999 (matching with Adam and the original Ada Hessian implementation), but it's something you can mess with yourself. 
