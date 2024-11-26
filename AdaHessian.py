@@ -4,7 +4,20 @@ import torch.nn.functional as F
 from torch import optim
 
 class AdaHessian(optim.Optimizer):
-    def __init__(self,params,wd = 0, mc_iters=1, lr=.001, betas=(.9,.999),eps = 1e-8, control_variate=False):
+    def __init__(self,params, lr=.001, wd = 0, betas=(.9,.999),mc_iters=1, eps = 1e-8, control_variate=True):
+        """Implements a modified version of the Ada Hessian algorithm from "ADAHESSIAN: An Adaptive Second OrderOptimizer for Machine Learning"
+
+        args:
+            params (iterable): iterable of parameters 
+
+            lr (float, optional): the step size during gradient descent
+            wd (float, optional): the weight decay hyperparemeter, using an L2 penalty. 
+            betas (tuple, optional): the momentum hyperparameters for the EMA of the gradient and hessian diagonal
+            mc_iters (int, optional): the number of monte carlo iterations used to compute hutchinsons method. 
+            eps (float, optional): a factor added to the diagonal hessian to prevent division by too small a number.
+            control_variate (bool, optional): a flag for wether the control_variate method is used or not.  
+
+        """
         super(AdaHessian, self).__init__(params, defaults={'lr':lr})
         self.state = dict()
         self.lr = lr
@@ -61,7 +74,7 @@ class AdaHessian(optim.Optimizer):
               step_size = group['lr']*bias_correction_0
               for p in group['params']:
                   if self.wd != 0:
-                      p.data = p.data * self.wd
+                      p.mul_(1-self.wd*self.lr)
 
                   mom = self.state[p]['mom']
                   mom.mul_(beta0).add_(p.grad,alpha=1-beta0)
@@ -71,6 +84,3 @@ class AdaHessian(optim.Optimizer):
                   p.addcdiv_(mom,denominator, value=-step_size)
 
         return loss
-
-
-
