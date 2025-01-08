@@ -40,8 +40,11 @@ $$\frac{\partial}{\partial \theta}  \left( \left(\frac{\partial \mathcal{L}}{\pa
 $$\left(\frac{\partial ^2 \mathcal{L}}{\partial \theta} - v_t \beta_1\right) z +\left(\frac{\partial \mathcal{L}}{\partial \theta}  - v_t \theta \beta_1\right)^T \left(\frac{\partial}{\partial \theta} z\right)  = $$ 
 
 $$ (H-v_t \beta_1) z + 0 $$ 
+
 Then averaged over monte carlo samples of $z$ we get:
+
 $$H_{diag} = \mathbb{E}[z \odot  (H - v_t \beta_1)z] $$
+
 Where $z$ is sampled according to a radermacher distribution. The above is the equation for our a control variate estimate of the hessian diagonal, where $v_t \beta_1$ is our estimate for the value hessian diagonal. 
 
 ## What this repo contains:
